@@ -6,17 +6,22 @@ import com.skilldistillery.cards.Card;
 import com.skilldistillery.cards.Hand;
 
 public class Dealer extends Player {
-	Hand hand;
+	private Hand hand;
+	private List<Card> cards; 
 
 	public Dealer(String name) {
 		super(name);
 		hand = super.getHand();
+		cards = hand.getCards();
 		
 	}
 	
 	public void dealerFirstHand() {
-		List<Card> cards = hand.getCards();
-		System.out.println(super.getName() + " is showing a " + cards.get(0));
+		cards = hand.getCards();
+		System.out.println(super.getName() + " is showing " + cards.get(0));
+	}
+	public Card showingCard() {
+		return cards.get(0);
 	}
 	
 	

@@ -21,7 +21,7 @@ public abstract class Hand {
 		
 	}
 	public void clearHand() {
-		handOfCards = null;
+		handOfCards = new ArrayList<>();
 	}
 	
 	public List<Card> getCards(){
