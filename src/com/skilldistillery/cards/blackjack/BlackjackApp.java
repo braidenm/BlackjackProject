@@ -25,6 +25,8 @@ public class BlackjackApp {
 		String quit = "";
 		int choice = 0;
 		Card card;
+		int bet;
+		
 		
 		
 		
@@ -43,8 +45,9 @@ public class BlackjackApp {
 		deck.shuffle();
 		do {
 			quit = "";
+			bet = 0;
 			
-			if(deck.checkDeckSize() < 10) {
+			if(deck.checkDeckSize() < 15) {
 				deck = new Deck();
 				deck.shuffle();
 				System.out.println("The Deck has been re-shuffled");
@@ -52,6 +55,22 @@ public class BlackjackApp {
 			}
 			
 			clearAllCards(playerList);
+			if(player1.getMoney() < 5) {
+				System.out.println("You don't have enough to play, better luck next time. goodbye!");
+				System.exit(0);
+			}
+			do {
+			try {
+				System.out.println("You have: $"+player1.getMoney());
+				System.out.println("Minimum bet is $5, how lucky are you feeling? ");
+				bet = sc.nextInt();
+				bet = player1.bet(bet);
+				}
+				catch (Exception e) {
+					System.err.println("Not a valid number, try again");
+				}
+			}while(bet < 5);
+			
 			
 			dealAllCards(playerList, deck);
 			System.out.println(dealer.getName() + " deals out 2 cards to everyone ");
@@ -67,12 +86,20 @@ public class BlackjackApp {
 			ifContains2AcesChangeOne(dealer);
 			
 			
+			
+			
 			if(player1.getPlayerHandValue() == 21 && dealer.getPlayerHandValue() !=21) {
-				System.out.print("BlackJack! =You win! Leave the Table? (Y/N): ");
+				
+				System.out.print("BlackJack! =You win! pays 3 to 1.");
+				System.out.println("you won: $"+ ((int)(bet * 1.5)));
+				player1.winMoney((int)(bet+ (bet * 1.5)));
+				System.out.println("Leave the Table? (Y/N): ");
 				quit = sc.next();
 			}
 			if(player1.getPlayerHandValue() == 21 && dealer.getPlayerHandValue() ==21) {
-				System.out.print("Dealer also has Blackjack, its a push! Leave the Table? (Y/N): ");
+				System.out.print("Dealer also has Blackjack, its a push!");
+				player1.tie(bet);
+				System.out.println("Leave the Table? (Y/N): ");
 				quit = sc.next();
 				
 			}
@@ -87,7 +114,7 @@ public class BlackjackApp {
 				
 				System.out.println("Dealer will check if they have blackjack...");
 				
-				quit = doesDealerHaveBlackjack(dealer, player1);
+				quit = doesDealerHaveBlackjack(dealer, player1, bet);
 			
 				if(quit.equalsIgnoreCase("N")) {
 						continue;
@@ -116,11 +143,23 @@ public class BlackjackApp {
 			
 			do {
 				if(choice == 1) {
+					String doubleDown = "N";
+					
+					if(player1.getMoney() >= 2*bet) {
+						System.out.print("Double down? Will double your bet. (Y/N): ");
+						doubleDown = sc.next();
+					}
+					
+					if(doubleDown.equalsIgnoreCase("Y")) {
+						bet = bet + player1.bet(bet);
+					}
+					
 					card = deck.dealcard();
 					System.out.println("you got " +card);
 					System.out.println();
 					Hit(player1, card);
 					System.out.println();
+					
 					
 					if (player1.getPlayerHandValue() > 21) {
 						
@@ -130,6 +169,7 @@ public class BlackjackApp {
 						if (player1.getPlayerHandValue() > 21) {
 						
 						System.out.println("You busted, dealer wins");
+						player1.loseMoney(bet);
 						System.out.print("Leave the table? (Y/N) ");
 						quit = sc.next();
 						}
@@ -142,6 +182,12 @@ public class BlackjackApp {
 							choice = 0;
 								break;
 						}
+						
+					}
+					
+					if(doubleDown.equalsIgnoreCase("Y")) {
+						choice = 2;
+						break;
 					}
 					do{
 						try{
@@ -180,20 +226,27 @@ public class BlackjackApp {
 				}
 				if (dealer.getPlayerHandValue() > 21) {
 					System.out.println("Dealer busted, You win!");
+					player1.winMoney(bet);
 					System.out.print("Leave the table? (Y/N) ");
 					quit = sc.next();
 				}
 				
 				else if (dealer.getPlayerHandValue() > player1.getPlayerHandValue()) {
-						System.out.print("Dealer won, leave the table? (Y/N) ");
+						System.out.print("Dealer won.");
+						player1.loseMoney(bet);
+						System.out.println("leave the table? (Y/N) ");
 						quit = sc.next();
 				}
 				else if(dealer.getPlayerHandValue() == player1.getPlayerHandValue()) {
-						System.out.println("You push. leave the Table? (Y/N) ");
+						System.out.println("You push.");
+						player1.tie(bet);
+						System.out.println("leave the Table? (Y/N) ");
 						quit = sc.next();
 				}
 				else if(dealer.getPlayerHandValue() < player1.getPlayerHandValue()) {
-						System.out.print("You won, leave the table? (Y/N) ");
+						System.out.print("You won!");
+						player1.winMoney(bet);
+						System.out.println("leave the table? (Y/N) ");
 						quit = sc.next();
 				}
 				
@@ -208,12 +261,13 @@ public class BlackjackApp {
 		
 	}
 		
-	private String doesDealerHaveBlackjack(Player dealer, Player player1) {
+	private String doesDealerHaveBlackjack(Player dealer, Player player1, int bet) {
 		String quit = "";
 		
 		
 		if(dealer.getPlayerHandValue() == 21) {
 				System.out.println("Dealer has blackjack and you don't. So you lose.");
+				player1.loseMoney(bet);
 				System.out.println("Leave the Table? (Y/N) ");
 				quit = sc.next();
 				
@@ -252,6 +306,10 @@ public class BlackjackApp {
 		for (Player player : playerList) {
 			if (player.getPlayerHandValue() != 0) {
 			player.clearPlayerHand();
+			
+			if(player.getHandList().size()>0) {
+				player.clearHandList();
+			}
 			}
 		}
 			
@@ -338,6 +396,18 @@ public class BlackjackApp {
 		
 		return aceList;
 	}
+	public boolean canSplit(Player player) {
+		Rank rank1 = player.getHand().getCards().get(0).getRank();
+		Rank rank2 = player.getHand().getCards().get(1).getRank();
+			
+		if(rank1.equals(rank2)) {
+			return true;
+		}
+		return false;
+		
+	}
+	
+	
 
 
 }

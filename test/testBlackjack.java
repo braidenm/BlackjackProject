@@ -95,5 +95,6 @@ class testBlackjack {
 		assertEquals(12, player.getPlayerHandValue());
 		
 	}
+	
 
 }

@@ -23,6 +23,9 @@ public abstract class Hand {
 	public void clearHand() {
 		handOfCards = new ArrayList<>();
 	}
+	public Card removeCard() {
+		return handOfCards.remove(0);
+	}
 	
 	public List<Card> getCards(){
 		
