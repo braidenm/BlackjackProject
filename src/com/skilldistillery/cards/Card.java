@@ -3,15 +3,15 @@ package com.skilldistillery.cards;
 public class Card {
 	
 	private Suit suit;
-	private Rank rank;
+	protected Rank rank;
+	
 	
 	public Card(Suit suit, Rank rank) {
 		this.suit = suit;
 		this.rank = rank;
 	}
+	
 
-	
-	
 	@Override
 	public String toString() {
 		return rank + " of " + suit;
@@ -20,7 +20,10 @@ public class Card {
 	public int getValue() {
 		return rank.getValue();
 	}
-
+	public Suit getSuit() {
+		return suit;
+	}
+	
 
 	@Override
 	public int hashCode() {
@@ -37,15 +40,24 @@ public class Card {
 			return true;
 		if (obj == null)
 			return false;
+
 		if (getClass() != obj.getClass())
 			return false;
 		Card other = (Card) obj;
-		if (rank != other.rank)
-			return false;
 		if (suit != other.suit)
 			return false;
+		if (rank.getValue() == 11 &&  other.getValue() == 1)
+			return true;
+		
+		if (rank != other.rank)
+			return false;
+		
 		return true;
 	}
+	
+	
+	
+	
 	
 
 }
