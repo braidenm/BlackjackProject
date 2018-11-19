@@ -27,5 +27,12 @@ public class Deck {
 	public void shuffle() {
 		Collections.shuffle(deck);
 	}
+	
+	public List<Card> getDeck() {
+		return deck;
+	}
+	public void addToDeck (List<Card> deck2) {
+		deck.addAll(deck2);
+	}
 
 }

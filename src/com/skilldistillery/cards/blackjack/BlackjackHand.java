@@ -6,6 +6,11 @@ import com.skilldistillery.cards.Card;
 import com.skilldistillery.cards.Hand;
 
 public class BlackjackHand extends Hand {
+	private int bet;
+
+	public BlackjackHand() {
+		super();
+	}
 
 	@Override
 	public int getHandvalue() {
@@ -24,5 +29,22 @@ public class BlackjackHand extends Hand {
 	public String toString() {
 		return super.toString() + " ("+ this.getHandvalue()+")";
 	}
+
+	public int getBet() {
+		return bet;
+	}
+
+	public void setBet(int bet) {
+		this.bet = bet;
+	}
+	
+	
+
+	
+	
+
+
+	
+
 
 }

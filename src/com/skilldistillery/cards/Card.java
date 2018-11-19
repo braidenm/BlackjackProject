@@ -3,7 +3,8 @@ package com.skilldistillery.cards;
 public class Card {
 	
 	private Suit suit;
-	protected Rank rank;
+	private Rank rank;
+	
 	
 	
 	public Card(Suit suit, Rank rank) {
@@ -49,7 +50,7 @@ public class Card {
 		Card other = (Card) obj;
 		if (suit != other.suit)
 			return false;
-		if (rank.getValue() == 11 &&  other.getValue() == 1)
+		if (rank.getValue() == 11 &&  other.getValue() == 1 || rank.getValue() == 1 &&  other.getValue() == 11 )
 			return true;
 		
 		if (rank != other.rank)

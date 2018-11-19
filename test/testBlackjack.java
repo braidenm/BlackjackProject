@@ -59,18 +59,26 @@ class testBlackjack {
 	@Test
 	void test_if_contains_ace_method_works() {
 		List<Card> cardList = new ArrayList<>();
-//		List<Card> aceList = new ArrayList<>();
 		Card ace = new Card(Suit.HEARTS, Rank.ACE1);
 		Card ace2 = new Card(Suit.SPADES, Rank.ACE1);
 		
-		//tried to check if I could pass a whole list
-//		aceList.add(new Card(Suit.CLUBS, Rank.ACE));
-//		aceList.add(new Card(Suit.DIAMONDS, Rank.ACE));
-//		aceList.add(new Card(Suit.HEARTS, Rank.ACE));
-//		aceList.add(new Card(Suit.SPADES, Rank.ACE));
-		
-		
 		cardList.add(new Card(Suit.HEARTS, Rank.ACE));
+		cardList.add(new Card(Suit.HEARTS, Rank.TEN));
+		cardList.add(new Card(Suit.HEARTS, Rank.JACK));
+		cardList.add(new Card(Suit.HEARTS, Rank.QUEEN));
+		
+		
+		
+		assertEquals(true, cardList.get(0).equals(ace));
+		assertEquals(false, cardList.get(0).equals(ace2));
+	}
+	@Test
+	void test_if_contains_ace_method_works_when_ace_is_1() {
+		List<Card> cardList = new ArrayList<>();
+		Card ace = new Card(Suit.HEARTS, Rank.ACE);
+		Card ace2 = new Card(Suit.SPADES, Rank.ACE);
+		
+		cardList.add(new Card(Suit.HEARTS, Rank.ACE1));
 		cardList.add(new Card(Suit.HEARTS, Rank.TEN));
 		cardList.add(new Card(Suit.HEARTS, Rank.JACK));
 		cardList.add(new Card(Suit.HEARTS, Rank.QUEEN));

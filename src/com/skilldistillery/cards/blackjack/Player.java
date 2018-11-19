@@ -8,16 +8,16 @@ import com.skilldistillery.cards.Card;
 public class Player {
 	private BlackjackHand hand;
 	private String name;
-	private int money;
 	private List<BlackjackHand> handList;
+	protected int money;
 	
 	
 	public Player(String name){
 		this.name = name;
 		hand = new BlackjackHand();
-		money = 100;
 		handList = new ArrayList<>();
 		handList.add(hand);
+		money =100;
 		
 	}
 
@@ -27,6 +27,9 @@ public class Player {
 	
 	public void clearPlayerHand() {
 		hand.clearHand();
+	}
+	public int getMoney() {
+		return money;
 	}
 	
 	public int getPlayerHandValue() {
@@ -43,7 +46,6 @@ public class Player {
 		BlackjackHand hand2 = new BlackjackHand();
 		
 		hand2.addCard(hand1.removeCard());
-		handList.add(hand1);
 		handList.add(hand2);
 		
 		return handList;
@@ -78,10 +80,6 @@ public class Player {
 		System.out.println("You lost $" + bet + " and now have: $"+money);
 	}
 	
-	public int  getMoney() {
-		return money;
-	}
-	
 	public int bet (int bet) {
 		if(money < bet) {
 			System.out.println("Not enough money.");
@@ -94,12 +92,6 @@ public class Player {
 	return 0;
 		
 	}
-	public int allIn() {
-		
-		int allIn = money;
-		money=0;
-		return allIn;
-	}
 	public void winMoney(int winnings) {
 		System.out.print("You won $"+winnings);
 		winnings +=winnings;
@@ -108,11 +100,10 @@ public class Player {
 	}
 	public void tie (int bet) {
 		money += bet;
-		System.out.println("You won your money back. balance: " + money);
+		System.out.println("You got your money back. balance: " + money);
 	}
-	
 
 
 	
-
+	
 }
