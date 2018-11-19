@@ -40,6 +40,7 @@ public class Player {
 	}
 	public void clearHandList() {
 		handList = new ArrayList<>();
+		handList.add(hand);
 	}
 	
 	public List<BlackjackHand> splitHand(BlackjackHand hand1) {
@@ -93,14 +94,20 @@ public class Player {
 		
 	}
 	public void winMoney(int winnings) {
-		System.out.print("You won $"+winnings);
+		System.out.print(name + " won $"+winnings);
 		winnings +=winnings;
 		money +=winnings;
-		System.out.println(", your total is: $"+money);
+		System.out.println(", total is: $"+money);
 	}
 	public void tie (int bet) {
 		money += bet;
-		System.out.println("You got your money back. balance: " + money);
+		System.out.println(name + " got their money back. balance: " + money);
+	}
+	public int getBet() {
+		return hand.getBet();
+	}
+	public void setBet(int bet) {
+		hand.setBet(bet);
 	}
 
 
