@@ -702,6 +702,11 @@ public class BlackjackApp {
 			boolean split;
 			String splitYesNo = "";
 			Card card;
+//			try {
+//				Thread.sleep(1000);
+//			} catch (InterruptedException e) {
+//				e.printStackTrace();
+//			}
 			if ( computerList.get(i).getPlayerHandValue() == 21) {
 				computerList.get(i).setBet(0);
 				break;
@@ -741,7 +746,7 @@ public class BlackjackApp {
 							
 					}
 					
-				System.out.println(playerHand);
+				System.out.println(computer.getName() +" "+playerHand);
 						
 				if(playerHand.getHandvalue()< 17)	{
 					choice = 1;
