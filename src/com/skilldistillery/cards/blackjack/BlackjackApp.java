@@ -137,17 +137,22 @@ public class BlackjackApp {
 				System.out.println("You have: $"+ player1.getMoney());
 				System.out.print("Minimum bet is: " + minBet+ ", how lucky are you feeling? ");
 				bet = sc.nextInt();
-				player1.getHand().setBet(player1.bet(bet));
 				}
 				catch (Exception e) {
 					bet = 0;
 					System.err.println("Not a valid number, try again");
 				}
-			if(bet< minBet) {
-				System.err.println("You must meet the min bet.");
-				player1.tie(bet);
-			}
-			}while(bet < 5);
+				if(bet< minBet) {
+					System.err.println("You must meet the min bet.");
+					bet = 0;
+				}
+				if(bet> player1.getMoney()) {
+					System.err.println("Try Again");
+					bet = 0;
+				}
+				player1.getHand().setBet(player1.bet(bet));
+			
+			}while(bet < minBet);
 			
 			for (Player computer : computerList) {
 				computer.setBet(computer.bet(minBet + 5));
@@ -161,8 +166,9 @@ public class BlackjackApp {
 			
 			dealer.dealerFirstHand();
 			System.out.println();
-			System.out.println(player1);
-			System.out.println();
+//			System.out.println(player1);
+//			System.out.println();
+			//This may be excessive 
 			
 			ifContains2AcesChangeOne(player1);
 			ifContains2AcesChangeOne(dealer);
@@ -206,6 +212,8 @@ public class BlackjackApp {
 				continue;
 			}
 			if (quit.equalsIgnoreCase("Y")) {
+				player1.setBet(0);
+				choice = 3;
 				break;
 			}
 			
@@ -228,6 +236,10 @@ public class BlackjackApp {
 //			Card ace2 = new Card(Suit.DIAMONDS, Rank.ACE);
 //			player1.getHand().getCards().set(0, ace);
 //			player1.getHand().getCards().set(1, ace2);
+			
+			if (player1.getBet() <= 0 ) {
+				player1.getHandList().clear();
+			}
 		for (int j = 0; j < player1.getHandList().size(); j++) {
 			BlackjackHand playerHand = player1.getHandList().get(j);
 			do {
@@ -246,6 +258,11 @@ public class BlackjackApp {
 						playerHand.addCard(deck.dealcard());
 						playerHandList.get(j+1).addCard(deck.dealcard());
 						playerHandList.get(j+1).setBet(player1.bet(bet));
+						//j+1 only occurs if it enters the if statement and when it does the arrayList
+						//gets bigger by one because of the splithand method. I want to deal out the second card
+						//immediately to simulate the Casino table. If the player does not split they dont enter this 
+						//statement
+						
 						
 						System.out.println(player1);
 						System.out.println("Lets make decisions on your first hand then we will go through your second.");
@@ -272,9 +289,9 @@ public class BlackjackApp {
 				
 			}while (choice <= 0 || choice > 3);
 			
+			String doubleDown = "";
 			do {
 				if(choice == 1) {
-					String doubleDown = "";
 					
 					if(player1.getMoney() >= 2*bet && !doubleDown.equalsIgnoreCase("N")) {
 						System.out.print("Double down? Will double your bet. (Y/N): ");
@@ -342,6 +359,7 @@ public class BlackjackApp {
 		}
 		
 		computerPlayers(computerList, deck);
+		
 		List<Player> computersLeft = new ArrayList<>();
 		for (int i = 0; i < computerList.size(); i++) {
 			if (computerList.get(i).getBet() > 0) {
@@ -354,9 +372,14 @@ public class BlackjackApp {
 				BlackjackHand playerHand = player1.getHandList().get(j);
 				
 				if(choice == 2) {
-					System.out.println(dealer);
-					System.out.println("Your hand: "+playerHand);
+					
 					System.out.println();
+					System.out.println("The dealer flips the other card over.");
+					System.out.println(dealer);
+					System.out.println();
+//					System.out.println("Your hand: "+playerHand);
+//					System.out.println();
+					//not sure if I like this here
 				
 				
 					if (containsAce(dealer.getHand()) && dealer.getPlayerHandValue() >= 17) {
@@ -369,19 +392,21 @@ public class BlackjackApp {
 						
 					
 					if (dealer.getPlayerHandValue() < 17) {
-					while (dealer.getPlayerHandValue() < 17) {
-						System.out.println(dealer.getName() + " takes another card.");
-						Hit(dealer.getHand(), deck.dealcard());
-						}
+						while (dealer.getPlayerHandValue() < 17) {
+							System.out.println(dealer.getName() + " takes another card.");
+							Hit(dealer.getHand(), deck.dealcard());
+							
+							}
 					}
 					for (int i = 0; i < computersLeft.size(); i++) {
 						
 						Player computer = computersLeft.get(i);
 						
 						if(dealer.getPlayerHandValue()> 21 ) {
+							System.out.println("Dealer busted");
 							computer.winMoney(computer.getBet());
 						}
-						
+						//keep the else here
 						else if (dealer.getPlayerHandValue() > computer.getPlayerHandValue()) {
 							System.out.println(computer.getName() + " lost");
 						}
@@ -395,9 +420,10 @@ public class BlackjackApp {
 					}
 					
 					if (dealer.getPlayerHandValue() > 21) {
-						System.out.println("Dealer busted!");
 						
-						player1.winMoney(playerHand.getBet());
+						if(player1.getBet()> 0) { //doing this so the table can finish but player lost a while ago
+							player1.winMoney(playerHand.getBet());
+						}
 						
 						System.out.print("Leave the table? (Y/N) ");
 						quit = sc.next();
@@ -406,22 +432,28 @@ public class BlackjackApp {
 					else if (dealer.getPlayerHandValue() > player1.getPlayerHandValue()) {
 							System.out.print("Dealer won.");
 							
-							player1.loseMoney(playerHand.getBet());
-								
+							if(player1.getBet()> 0) { //doing this so the table can finish but player lost a while ago
+
+								player1.loseMoney(playerHand.getBet());
+							}	
 							System.out.println("leave the table? (Y/N) ");
 							quit = sc.next();
 					}
 					else if(dealer.getPlayerHandValue() == player1.getPlayerHandValue()) {
-							
-							player1.tie(playerHand.getBet());
-												
+						
+							if(player1.getBet()> 0) { //doing this so the table can finish but player lost a while ago
+
+								player1.tie(playerHand.getBet());
+							}					
 							System.out.println("leave the Table? (Y/N) ");
 							quit = sc.next();
 					}
 					else if(dealer.getPlayerHandValue() < player1.getPlayerHandValue()) {
-						
-							player1.winMoney(playerHand.getBet());
 							
+							if(player1.getBet()> 0) { //doing this so the table can finish but player lost a while ago
+
+								player1.winMoney(playerHand.getBet());
+							}
 	
 							System.out.println("leave the table? (Y/N) ");
 							quit = sc.next();
@@ -489,21 +521,24 @@ public class BlackjackApp {
 	public void clearAllCards(List<Player> playerList, List<Player> computerList){
 		
 		for (Player player : playerList) {
+			
+			//if this is buggy, nest the if statements.
 			if (player.getPlayerHandValue() != 0) {
 			player.clearPlayerHand();
 			
+			}
 			if(player.getHandList().size()>0) {
 				player.clearHandList();
-			}
 			}
 		}
 		for (Player player : computerList) {
 			if (player.getPlayerHandValue() != 0) {
 				player.clearPlayerHand();
 				
-				if(player.getHandList().size()>0) {
-					player.clearHandList();
-				}
+			}
+		
+			if(player.getHandList().size()>0) {
+				player.clearHandList();
 			}
 		}
 			
@@ -532,7 +567,7 @@ public class BlackjackApp {
 		
 		for (int i = 0 ; i < Hand.size(); i++) {
 			for (Card ace : aceList) {
-				if (playerHand.getHandvalue()> 21) {
+				if (playerHand.getHandvalue()> 21) {//this if statement is so needed!!!!!!
 					
 					if (Hand.get(i).equals(ace) && Hand.get(i).getValue() == 11) {
 						Hand.set(i, ace);
@@ -566,6 +601,9 @@ public class BlackjackApp {
 	}
 	
 	public void ifContains2AcesChangeOne(Player player){
+		//this passes the player and not the hand because
+		//the hand iteration doesn't start until later and this is when they get their
+		//first hand of the game before any other logic happens
 		
 		List<Card> aceList = getAceList();
 
@@ -589,7 +627,8 @@ public class BlackjackApp {
 			playerHand.set(0, numberOfAces.get(0));
 			
 		if (!(player instanceof Dealer)) {
-			
+			//added this if statement because if the dealer had 2 aces to start
+			//the aces needs to happen still but the player can't know the cards
 			System.out.println("Since there are 2 aces one of them is now worth 1");
 			System.out.println(player);
 		}
@@ -600,7 +639,7 @@ public class BlackjackApp {
 			
 	}
 	public List<Card> getAceList(){
-		
+		//These are the aces that have a value of one
 		List<Card> aceList = new ArrayList<>();
 		Card ace1 = new Card(Suit.CLUBS, Rank.ACE1);
 		Card ace2 = new Card(Suit.DIAMONDS, Rank.ACE1);
@@ -615,7 +654,7 @@ public class BlackjackApp {
 		return aceList;
 	}
 	public List<Card> getOriginalAceList(){
-		
+		//this is a list of aces with a value of 11
 		List<Card> aceList = new ArrayList<>();
 		Card ace1 = new Card(Suit.CLUBS, Rank.ACE);
 		Card ace2 = new Card(Suit.DIAMONDS, Rank.ACE);
@@ -639,7 +678,9 @@ public class BlackjackApp {
 				return true;
 				
 			}
-
+			
+			//needed the rest of this for the Aces since they are special 
+			//later on if one ace is valued at one it will be reversed to 11 
 			for (int i = 0 ; i < hand.getCards().size(); i++) {
 				for (Card ace : aceList) {
 					if (hand.getCards().get(i).equals(ace)) {
@@ -661,6 +702,10 @@ public class BlackjackApp {
 			boolean split;
 			String splitYesNo = "";
 			Card card;
+			if ( computerList.get(i).getPlayerHandValue() == 21) {
+				computerList.get(i).setBet(0);
+				break;
+			}
 			
 			List<BlackjackHand> playerHandList = new ArrayList<>();
 
@@ -690,7 +735,9 @@ public class BlackjackApp {
 						playerHand.addCard(deck.dealcard());
 						playerHandList.get(j+1).addCard(deck.dealcard());							
 						playerHandList.get(j+1).setBet(computer.bet(computer.getBet()));
+						//this is the same logic in the player version. see line 260
 						
+						System.out.println(computer.getName() + "Split there hand");
 						splitYesNo = "no";
 						System.out.println(computer);
 							
@@ -717,11 +764,12 @@ public class BlackjackApp {
 						}
 						
 						if(doubleDown.equalsIgnoreCase("Y")) {
+							System.out.println(computer.getName() + " doubled down");
 							playerHand.setBet(computer.getBet() + computer.bet(computer.getBet()));
 						}
 						
 						card = deck.dealcard();
-						System.out.println(computer.getName() + " got " +card);
+						System.out.println(computer.getName() + " takes another card and got " +card + " and now has: ");
 						System.out.println();
 						Hit(computer.getHand(), card);
 						System.out.println();
@@ -736,6 +784,7 @@ public class BlackjackApp {
 							
 								System.out.println(computer.getName() +" busted.");
 								System.out.println(computer.getName() + " lost $" + computer.getBet());
+								System.out.println();
 								computer.setBet(0);
 							}
 						
