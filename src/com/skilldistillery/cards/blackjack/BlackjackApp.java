@@ -67,6 +67,7 @@ public class BlackjackApp {
 					numPlayers = sc.nextInt();
 					if (numPlayers < 0 || numPlayers > 4) {
 						System.err.println("not a valid selction");
+						System.out.println();
 						continue;
 					}
 					break;
@@ -166,9 +167,8 @@ public class BlackjackApp {
 			
 			dealer.dealerFirstHand();
 			System.out.println();
-//			System.out.println(player1);
-//			System.out.println();
-			//This may be excessive 
+			System.out.println(player1);
+			System.out.println();
 			
 			ifContains2AcesChangeOne(player1);
 			ifContains2AcesChangeOne(dealer);
@@ -707,6 +707,9 @@ public class BlackjackApp {
 //			} catch (InterruptedException e) {
 //				e.printStackTrace();
 //			}
+			
+			//this kinda works but does weird stuff
+			
 			if ( computerList.get(i).getPlayerHandValue() == 21) {
 				computerList.get(i).setBet(0);
 				break;
