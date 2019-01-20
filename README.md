@@ -1,6 +1,7 @@
-## BlackJack Project
+https://github.com/braidenm/BlackjackProject## BlackJack Project
 
-_skill Distillery Week 3 Homework project_
+skill Distillery Week 3 Homework project
+Main App is in
 ### Overview
 
 ## Blackjack Game:
@@ -17,7 +18,7 @@ _skill Distillery Week 3 Homework project_
 
 * JUnit tests
 * Object oriented (classes, enum, abstract classes, 4 pilers, etc.)
-*
+* Nested Conditional statments
 
 ## Stretch Goals
 
