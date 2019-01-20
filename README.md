@@ -1,7 +1,7 @@
 https://github.com/braidenm/BlackjackProject## BlackJack Project
 
 skill Distillery Week 3 Homework project
-Main App is in
+Main App is in: src/com/skilldistillery/cards/blackJack/blackJackApp
 ### Overview
 
 ## Blackjack Game:
